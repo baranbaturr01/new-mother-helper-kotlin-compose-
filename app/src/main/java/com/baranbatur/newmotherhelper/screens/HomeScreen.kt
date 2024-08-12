@@ -37,6 +37,7 @@ fun HomeScreen(navController: NavController, token: String) {
                     if (response.isSuccessful) {
                         categories = response.body()?.data ?: emptyList()
                     } else {
+                        println(response.errorBody()?.string())
                         Toast.makeText(context, "Failed to load categories", Toast.LENGTH_SHORT)
                             .show()
                     }

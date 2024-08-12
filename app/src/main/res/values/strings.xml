@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">NewMotherHelper</string>
+    <string name="app_name">Anne Rehberi</string>
+    <string name="slogan">Annelerin yanında olan bir rehber</string>
+    <string name="login">Login</string>
 </resources>

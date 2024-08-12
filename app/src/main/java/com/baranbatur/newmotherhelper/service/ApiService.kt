@@ -9,6 +9,15 @@ import retrofit2.http.Query
 
 data class LoginRequest(val email: String, val password: String)
 data class LoginResponse(val success: Boolean, val data: TokenData)
+data class RegisterRequest(
+    val name: String,
+    val surname: String,
+    val email: String,
+    val password: String
+)
+
+data class RegisterResponse(val success: Boolean, val data: RegisterData)
+data class RegisterData(val name: String, val surname: String, val email: String, val token: String)
 data class TokenData(val token: String)
 data class Category(val id: Int, val name: String, val description: String)
 data class CategoryResponse(val success: Boolean, val data: List<Category>)
@@ -26,6 +35,9 @@ data class CategoryListItem(val id: Int, val itemName: String, val is_added: Boo
 interface ApiService {
     @POST("api/v1/user/login")
     fun login(@Body request: LoginRequest): Call<LoginResponse>
+
+    @POST("api/v1/user/register")
+    fun register(@Body request: RegisterRequest): Call<RegisterResponse>
 
     @GET("api/v1/category")
     fun getCategories(@Header("Authorization") token: String): Call<CategoryResponse>

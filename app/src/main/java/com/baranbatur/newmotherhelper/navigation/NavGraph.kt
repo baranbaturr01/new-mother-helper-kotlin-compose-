@@ -12,13 +12,15 @@ import com.baranbatur.newmotherhelper.screens.LoginScreen
 import com.baranbatur.newmotherhelper.screens.ProfileScreen
 import com.baranbatur.newmotherhelper.screens.ReceivedScreen
 import com.baranbatur.newmotherhelper.screens.RegisterScreen
+import com.baranbatur.newmotherhelper.screens.SplashScreen
 
 @Composable
 fun NavGraph(navController: NavHostController) {
     val context = LocalContext.current
     val sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
     val token = sharedPreferences.getString("token", "") ?: ""
-    NavHost(navController = navController, startDestination = "login") {
+    NavHost(navController = navController, startDestination = "splash_screen") {
+        composable("splash_screen") { SplashScreen(navController) }
         composable("login") { LoginScreen(navController) }
         composable("register") { RegisterScreen(navController) }
         composable("home") {
