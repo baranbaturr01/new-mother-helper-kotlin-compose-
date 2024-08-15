@@ -16,6 +16,7 @@ data class RegisterRequest(
     val password: String
 )
 
+data class UpdateCategoryItemRequest(val categoryListId: Int)
 data class RegisterResponse(val success: Boolean, val data: RegisterData)
 data class RegisterData(val name: String, val surname: String, val email: String, val token: String)
 data class TokenData(val token: String)
@@ -29,8 +30,32 @@ data class CategoryListData(
     val items: List<CategoryListItem>
 )
 
-data class CategoryListItem(val id: Int, val itemName: String, val is_added: Boolean)
-//bunlar model adında bir paket altında toplanabilir TODO
+data class UpdateCategoryItemResponse(val success: Boolean, val data: UpdateCategoryItemData)
+data class UpdateCategoryItemData(
+    val categoryId: Int,
+    val itemName: String,
+    val added: Boolean
+)
+
+data class CategoryListItem(
+    val id: Int,
+    val itemName: String,
+    val is_added: Boolean,
+    val iconUrl: String
+)
+
+data class UserCategoryListResponse(
+    val success: Boolean,
+    val data: List<UserCategoryListData>
+)
+
+data class UserCategoryListData(
+    val id: Int,
+    val categoryId: Int,
+    val categoryName: String,
+    val itemName: String,
+    val iconUrl: String,
+)
 
 interface ApiService {
     @POST("api/v1/user/login")
@@ -46,4 +71,13 @@ interface ApiService {
     fun getCategoryList(
         @Header("Authorization") token: String, @Query("categoryId") categoryId: Int
     ): Call<CategoryListResponse>
+
+    @POST("api/v1/user-category-list")
+    fun updateCategoryItem(
+        @Header("Authorization") token: String,
+        @Body request: UpdateCategoryItemRequest
+    ): Call<UpdateCategoryItemResponse>
+
+    @GET("api/v1/user-category-list")
+    fun getUserCategoryList(@Header("Authorization") token: String): Call<UserCategoryListResponse>
 }

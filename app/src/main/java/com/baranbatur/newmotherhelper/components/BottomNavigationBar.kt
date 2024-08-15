@@ -15,6 +15,10 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import com.baranbatur.newmotherhelper.ui.theme.LightGreyColor
+import com.baranbatur.newmotherhelper.ui.theme.PrimaryColor
+import com.baranbatur.newmotherhelper.ui.theme.SecondaryColor
+import com.baranbatur.newmotherhelper.ui.theme.WhiteColor
 
 @Composable
 fun BottomNavigationBar(navController: NavController) {
@@ -22,7 +26,9 @@ fun BottomNavigationBar(navController: NavController) {
     val currentRoute = navBackStackEntry?.destination?.route
 
     BottomNavigation(
-        elevation = 8.dp
+        elevation = 8.dp,
+        backgroundColor = MaterialTheme.colorScheme.secondary,
+        contentColor = WhiteColor
     ) {
         val screens = listOf(
             Screen.Home,
@@ -31,15 +37,18 @@ fun BottomNavigationBar(navController: NavController) {
         )
         screens.forEach { screen ->
             BottomNavigationItem(
-                icon = { Icon(screen.icon, contentDescription = screen.title) },
-                label = { Text(screen.title) },
+                icon = { Icon(screen.icon, contentDescription = screen.title, tint = WhiteColor) },
+                label = { Text(screen.title, color = WhiteColor) },
                 selected = currentRoute == screen.route,
                 onClick = {
                     navController.navigate(screen.route) {
-                        popUpTo = navController.graph.findStartDestination().id
+                        popUpTo(navController.graph.findStartDestination().id)
                         launchSingleTop = true
                     }
-                }
+                },
+                selectedContentColor = SecondaryColor,
+                unselectedContentColor = WhiteColor,
+                alwaysShowLabel = true
             )
         }
     }
@@ -47,6 +56,6 @@ fun BottomNavigationBar(navController: NavController) {
 
 sealed class Screen(val route: String, val title: String, val icon: ImageVector) {
     object Home : Screen("home", "Anasayfa", Icons.Filled.Home)
-    object Received : Screen("received", "Alınanlar", Icons.Filled.CheckCircle)
+    object Received : Screen("received", "Aldıklarım", Icons.Filled.CheckCircle)
     object Profile : Screen("profile", "Profilim", Icons.Filled.Person)
 }

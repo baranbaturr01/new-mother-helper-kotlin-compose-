@@ -19,6 +19,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.baranbatur.newmotherhelper.R
+import com.baranbatur.newmotherhelper.components.InputType
+import com.baranbatur.newmotherhelper.components.TextInput
 import com.baranbatur.newmotherhelper.service.LoginResponse
 import com.baranbatur.newmotherhelper.service.RegisterRequest
 import com.baranbatur.newmotherhelper.service.RegisterResponse

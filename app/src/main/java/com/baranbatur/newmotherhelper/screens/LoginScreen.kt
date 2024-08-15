@@ -52,6 +52,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.baranbatur.newmotherhelper.R
+import com.baranbatur.newmotherhelper.components.InputType
+import com.baranbatur.newmotherhelper.components.TextInput
 import com.baranbatur.newmotherhelper.service.LoginRequest
 import com.baranbatur.newmotherhelper.service.LoginResponse
 import com.baranbatur.newmotherhelper.service.RetrofitClient
@@ -132,6 +134,7 @@ fun LoginScreen(navController: NavController) {
                                         // Store the token securely (e.g., SharedPreferences)
                                         editor.putString("token", token).apply()
                                         // Navigate to the home screen
+                                        navController.popBackStack()
                                         navController.navigate("home")
                                     } ?: run {
                                         Toast.makeText(
@@ -196,67 +199,3 @@ private fun Context.doLogin() {
     ).show()
 }
 
-sealed class InputType(
-    val label: String,
-    val icon: ImageVector,
-    val keyboardOptions: KeyboardOptions,
-    val visualTransformation: VisualTransformation
-) {
-    object Name : InputType(
-        label = "İsim",
-        icon = Icons.Default.Person,
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-        visualTransformation = VisualTransformation.None
-    )
-
-    object Surname : InputType(
-        label = "Soyisim",
-        icon = Icons.Default.Person,
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-        visualTransformation = VisualTransformation.None
-    )
-
-    object Email : InputType(
-        label = "E-Posta",
-        icon = Icons.Default.Email,
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-        visualTransformation = VisualTransformation.None
-    )
-
-    object Password : InputType(
-        label = "Şifre", icon = Icons.Default.Lock, keyboardOptions = KeyboardOptions(
-            imeAction = ImeAction.Done, keyboardType = KeyboardType.Password
-        ), visualTransformation = PasswordVisualTransformation()
-    )
-}
-
-@Composable
-fun TextInput(
-    inputType: InputType,
-    value: String,
-    onValueChange: (String) -> Unit,
-    focusRequester: FocusRequester? = null,
-    keyboardActions: KeyboardActions
-) {
-
-    TextField(
-        value = value,
-        onValueChange = onValueChange,
-        modifier = Modifier
-            .fillMaxWidth()
-            .focusRequester(focusRequester ?: FocusRequester()),
-        leadingIcon = { Icon(imageVector = inputType.icon, null) },
-        label = { Text(text = inputType.label) },
-        shape = Shapes.small,
-        colors = TextFieldDefaults.textFieldColors(
-            backgroundColor = Color.White, // Background color for text field
-            focusedIndicatorColor = PrimaryColor, // Primary color for focused indicator
-            unfocusedIndicatorColor = LightGreyColor, // Light grey for unfocused indicator
-            disabledIndicatorColor = LightGreyColor // Light grey for disabled indicator
-        ),
-        singleLine = true,
-        keyboardOptions = inputType.keyboardOptions,
-        visualTransformation = inputType.visualTransformation,
-        keyboardActions = keyboardActions
-    )
-}
