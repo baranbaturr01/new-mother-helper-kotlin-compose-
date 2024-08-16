@@ -1,0 +1,199 @@
+package com.baranbatur.newmotherhelper.screens
+
+import android.widget.Toast
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
+import com.baranbatur.newmotherhelper.components.BottomNavigationBar
+import com.baranbatur.newmotherhelper.service.ContentData
+import com.baranbatur.newmotherhelper.service.ContentResponse
+import com.baranbatur.newmotherhelper.service.RetrofitClient
+import com.baranbatur.newmotherhelper.ui.theme.WhiteColor
+import retrofit2.Call
+import retrofit2.Response
+import retrofit2.Callback
+
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+fun AboutBabyScreen(navController: NavController, token: String) {
+    var items by remember { mutableStateOf<List<ContentData>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+    var expandedItemId by remember { mutableStateOf<Int?>(null) }
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        RetrofitClient.instance.getContent("Bearer $token")
+            .enqueue(object : Callback<ContentResponse> {
+                override fun onResponse(
+                    call: Call<ContentResponse>,
+                    response: Response<ContentResponse>
+                ) {
+                    isLoading = false
+                    if (response.isSuccessful) {
+                        items = response.body()?.data ?: emptyList()
+                    } else {
+                        Toast.makeText(context, "Failed to load items", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<ContentResponse>, t: Throwable) {
+                    isLoading = false
+                    Toast.makeText(context, "Network error", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Bebeğim Hakkında",
+                        style = MaterialTheme.typography.titleLarge.copy(fontSize = 24.sp),
+                        color = WhiteColor
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(MaterialTheme.colorScheme.secondary)
+            )
+        },
+        bottomBar = {
+            BottomNavigationBar(navController = navController)
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .wrapContentSize()
+                        .padding(16.dp)
+                )
+            } else {
+                LazyColumn(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(items) { item ->
+                        ExpandableItemRow(
+                            item = item,
+                            isExpanded = expandedItemId == item.id,
+                            onClick = {
+                                expandedItemId = if (expandedItemId == item.id) null else item.id
+                            }
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+
+}
+
+@Composable
+fun ExpandableItemRow(
+    item: ContentData,
+    isExpanded: Boolean,
+    onClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .background(MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(16.dp))
+            .border(1.dp, Color(0xFFDDDDDD), shape = RoundedCornerShape(16.dp))
+            .clickable { onClick() }
+    ) {
+        // Başlık ve buton kısmı
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(64.dp)
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = item.title,
+                style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp),
+                color = Color.White,
+                modifier = Modifier.weight(1f)
+            )
+            Icon(
+                imageVector = Icons.Default.KeyboardArrowDown,
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier.rotate(
+                    if (isExpanded) 180f else 0f
+                )
+            )
+        }
+
+        // Resim ve açıklama kısmı, sadece genişletildiğinde gösterilir
+        if (isExpanded) {
+            Image(
+                painter = rememberAsyncImagePainter(item.imageUrl),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(180.dp)
+                    .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(16.dp)),
+                contentScale = ContentScale.Crop
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = item.description,
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.White,
+                modifier = Modifier.padding(8.dp)
+            )
+        }
+    }
+}

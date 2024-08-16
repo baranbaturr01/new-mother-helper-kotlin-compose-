@@ -6,6 +6,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.baranbatur.newmotherhelper.screens.AboutBabyScreen
 import com.baranbatur.newmotherhelper.screens.CategoryListScreen
 import com.baranbatur.newmotherhelper.screens.HomeScreen
 import com.baranbatur.newmotherhelper.screens.LoginScreen
@@ -29,6 +30,9 @@ fun NavGraph(navController: NavHostController) {
         composable("categoryList/{categoryId}") { backStackEntry ->
             val categoryId = backStackEntry.arguments?.getString("categoryId")?.toIntOrNull() ?: 0
             CategoryListScreen(navController, categoryId, token)
+        }
+        composable("about") {
+            AboutBabyScreen(navController, token)
         }
 
     }

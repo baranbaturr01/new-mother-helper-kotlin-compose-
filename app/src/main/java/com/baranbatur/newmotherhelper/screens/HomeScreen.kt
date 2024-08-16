@@ -7,16 +7,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -31,7 +26,6 @@ import com.baranbatur.newmotherhelper.ui.theme.WhiteColor
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import kotlin.random.Random
 
 @Composable
 fun HomeScreen(navController: NavController, token: String) {
@@ -151,7 +145,7 @@ fun CategoryItem(category: Category, navController: NavController) {
                 style = MaterialTheme.typography.titleMedium,
                 color = WhiteColor, // Kategorinin adını beyaz renkte yapalım
                 modifier = Modifier.fillMaxWidth(),
-                maxLines = 1
+                maxLines = 4
             )
             Text(
                 text = category.description,

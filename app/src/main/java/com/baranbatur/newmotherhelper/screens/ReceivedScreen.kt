@@ -1,5 +1,6 @@
 package com.baranbatur.newmotherhelper.screens
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -10,6 +11,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,6 +34,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.baranbatur.newmotherhelper.components.BottomNavigationBar
 import com.baranbatur.newmotherhelper.service.CategoryListData
 import com.baranbatur.newmotherhelper.service.CategoryListItem
+import com.baranbatur.newmotherhelper.service.DeleteUserCategoryListResponse
 import com.baranbatur.newmotherhelper.service.RetrofitClient
 import com.baranbatur.newmotherhelper.service.UpdateCategoryItemRequest
 import com.baranbatur.newmotherhelper.service.UpdateCategoryItemResponse
@@ -77,7 +81,8 @@ fun ReceivedScreen(navController: NavController, token: String) {
                     Column {
                         Text(
                             text = "Aldıklarım",
-                            style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.titleLarge.copy(fontSize = 24.sp),
                             color = WhiteColor,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
@@ -111,7 +116,12 @@ fun ReceivedScreen(navController: NavController, token: String) {
                 ) {
                     items(items) { item ->
                         UserCategoryListItemRow(
-                            item = item, token = token, navController = navController
+                            item = item,
+                            token = token,
+                            navController = navController,
+                            onItemDeleted = {
+                                items = items.filter { it.id != item.id }
+                            }
                         )
                     }
                 }
@@ -123,9 +133,13 @@ fun ReceivedScreen(navController: NavController, token: String) {
 
 @Composable
 fun UserCategoryListItemRow(
-    item: UserCategoryListData, token: String, navController: NavController
+    item: UserCategoryListData,
+    token: String,
+    navController: NavController,
+    onItemDeleted: () -> Unit
 ) {
     val context = LocalContext.current
+    var showDialog by remember { mutableStateOf(false) }
 
     Row(
         modifier = Modifier
@@ -153,5 +167,54 @@ fun UserCategoryListItemRow(
                 .weight(1f)
                 .padding(horizontal = 16.dp)
         )
+        Icon(
+            imageVector = Icons.Default.Delete,
+            contentDescription = "Delete Item",
+            tint = Color.White,
+            modifier = Modifier
+                .padding(end = 16.dp)
+                .clickable { showDialog = true }
+        )
+        if (showDialog) {
+            AlertDialog(
+                onDismissRequest = { showDialog = false },
+                title = { Text(text = "Bu Ürün Alınmadı Mı?") },
+                confirmButton = {
+                    TextButton(onClick = {
+                        showDialog = false
+                        deleteItem(item.id, token, context, onItemDeleted)
+                    }) {
+                        Text("Evet")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showDialog = false }) {
+                        Text("Hayır")
+                    }
+                }
+            )
+        }
     }
+}
+
+fun deleteItem(itemId: Int, token: String, context: Context, onItemDeleted: () -> Unit) {
+    println(itemId)
+    RetrofitClient.instance.deleteUserCategoryList("Bearer $token", itemId)
+        .enqueue(object : Callback<DeleteUserCategoryListResponse> {
+            override fun onResponse(
+                call: Call<DeleteUserCategoryListResponse>,
+                response: Response<DeleteUserCategoryListResponse>
+            ) {
+                if (response.isSuccessful) {
+                    Toast.makeText(context, "Ürün Başarıyla Silindi", Toast.LENGTH_SHORT).show()
+                    onItemDeleted()
+                } else {
+                    Toast.makeText(context, "Ürün Silinirken Bir Hata Oldu", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<DeleteUserCategoryListResponse>, t: Throwable) {
+                Toast.makeText(context, "Network error", Toast.LENGTH_SHORT).show()
+            }
+        })
 }
