@@ -1,5 +1,6 @@
 package com.baranbatur.newmotherhelper.components
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
@@ -20,6 +21,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.materialIcon
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.min
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import coil.size.Size
@@ -27,6 +29,14 @@ import com.baranbatur.newmotherhelper.ui.theme.LightGreyColor
 import com.baranbatur.newmotherhelper.ui.theme.PrimaryColor
 import com.baranbatur.newmotherhelper.ui.theme.SecondaryColor
 import com.baranbatur.newmotherhelper.ui.theme.WhiteColor
+
+@Composable
+fun BottomNavigationBarWtihAds(navController: NavController) {
+    Column {
+        BannerAdView(context = LocalContext.current)
+        BottomNavigationBar(navController = navController)
+    }
+}
 
 @Composable
 fun BottomNavigationBar(navController: NavController) {

@@ -76,4 +76,5 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2")
     implementation("com.google.accompanist:accompanist-insets:0.24.13-rc")
     implementation("io.coil-kt:coil-compose:2.2.2")
+    implementation("com.google.android.gms:play-services-ads:23.3.0")
 }

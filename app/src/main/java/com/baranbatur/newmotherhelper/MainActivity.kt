@@ -9,11 +9,13 @@ import androidx.compose.material3.Surface
 import androidx.navigation.compose.rememberNavController
 import com.baranbatur.newmotherhelper.navigation.NavGraph
 import com.baranbatur.newmotherhelper.ui.theme.NewMotherHelperTheme
+import com.google.android.gms.ads.MobileAds
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        MobileAds.initialize(this) {}
         setContent {
             NewMotherHelperTheme {
                 Surface(color = MaterialTheme.colorScheme.background) {

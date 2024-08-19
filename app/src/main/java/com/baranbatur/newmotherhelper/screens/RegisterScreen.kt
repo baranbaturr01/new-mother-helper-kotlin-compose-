@@ -19,6 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.baranbatur.newmotherhelper.R
+import com.baranbatur.newmotherhelper.components.BannerAdView
 import com.baranbatur.newmotherhelper.components.InputType
 import com.baranbatur.newmotherhelper.components.TextInput
 import com.baranbatur.newmotherhelper.service.LoginResponse
@@ -42,6 +43,7 @@ fun RegisterScreen(navController: NavController) {
     val focusManager = LocalFocusManager.current
     val passwordFocusRequester = FocusRequester()
 
+    BannerAdView(context = context)
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -158,6 +160,8 @@ fun RegisterScreen(navController: NavController) {
                 ) // Primary Color for link text
             }
         }
+        Spacer(modifier = Modifier.weight(1f))
+        BannerAdView(context = context)
     }
 }
 

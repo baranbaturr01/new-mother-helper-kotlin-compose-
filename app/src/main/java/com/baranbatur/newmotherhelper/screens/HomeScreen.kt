@@ -17,7 +17,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import com.baranbatur.newmotherhelper.R
+import com.baranbatur.newmotherhelper.components.BannerAdView
 import com.baranbatur.newmotherhelper.components.BottomNavigationBar
+import com.baranbatur.newmotherhelper.components.BottomNavigationBarWtihAds
 import com.baranbatur.newmotherhelper.components.Header
 import com.baranbatur.newmotherhelper.service.Category
 import com.baranbatur.newmotherhelper.service.CategoryResponse
@@ -57,9 +59,12 @@ fun HomeScreen(navController: NavController, token: String) {
     }
 
     Scaffold(
-        topBar = { Header() },
+        topBar = {
+            Header()
+        },
+
         bottomBar = {
-            BottomNavigationBar(navController = navController)
+            BottomNavigationBarWtihAds(navController = navController)
         },
     ) { innerPadding ->
         Column(

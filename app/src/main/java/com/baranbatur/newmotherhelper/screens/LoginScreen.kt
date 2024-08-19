@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -52,6 +53,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.baranbatur.newmotherhelper.R
+import com.baranbatur.newmotherhelper.components.BannerAdView
 import com.baranbatur.newmotherhelper.components.InputType
 import com.baranbatur.newmotherhelper.components.TextInput
 import com.baranbatur.newmotherhelper.service.LoginRequest
@@ -75,7 +77,7 @@ fun LoginScreen(navController: NavController) {
     val passwordFocusRequester = FocusRequester()
     val sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
     val editor = sharedPreferences.edit()
-
+BannerAdView(context = context)
     Column(
         Modifier
             .fillMaxSize()
@@ -190,7 +192,10 @@ fun LoginScreen(navController: NavController) {
                 Text(text = "Kayıt Ol", color = PrimaryColor) // Primary Color for link text
             }
         }
+        Spacer(modifier = Modifier.weight(1f))
+        BannerAdView(context = context)
     }
+
 }
 
 private fun Context.doLogin() {

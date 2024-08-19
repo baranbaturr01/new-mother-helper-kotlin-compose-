@@ -32,6 +32,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.baranbatur.newmotherhelper.components.BottomNavigationBar
+import com.baranbatur.newmotherhelper.components.BottomNavigationBarWtihAds
+import com.baranbatur.newmotherhelper.components.InterstitialAdManager
+import com.baranbatur.newmotherhelper.components.showCustomToast
 import com.baranbatur.newmotherhelper.service.CategoryListData
 import com.baranbatur.newmotherhelper.service.CategoryListItem
 import com.baranbatur.newmotherhelper.service.DeleteUserCategoryListResponse
@@ -94,7 +97,7 @@ fun ReceivedScreen(navController: NavController, token: String) {
             )
         },
         bottomBar = {
-            BottomNavigationBar(navController = navController)
+            BottomNavigationBarWtihAds(navController = navController)
         },
     ) { innerPadding ->
         Column(
@@ -109,6 +112,8 @@ fun ReceivedScreen(navController: NavController, token: String) {
                         .wrapContentSize()
                         .padding(16.dp)
                 )
+            } else if (items.isEmpty()) {
+                EmptyPage()
             } else {
                 LazyColumn(
                     modifier = Modifier.padding(16.dp),
@@ -198,7 +203,7 @@ fun UserCategoryListItemRow(
 }
 
 fun deleteItem(itemId: Int, token: String, context: Context, onItemDeleted: () -> Unit) {
-    println(itemId)
+    InterstitialAdManager.showInterstitialAd(context)
     RetrofitClient.instance.deleteUserCategoryList("Bearer $token", itemId)
         .enqueue(object : Callback<DeleteUserCategoryListResponse> {
             override fun onResponse(
@@ -206,10 +211,10 @@ fun deleteItem(itemId: Int, token: String, context: Context, onItemDeleted: () -
                 response: Response<DeleteUserCategoryListResponse>
             ) {
                 if (response.isSuccessful) {
-                    Toast.makeText(context, "Ürün Başarıyla Silindi", Toast.LENGTH_SHORT).show()
+                    showCustomToast(context, "Ürün Başarıyla Silindi")
                     onItemDeleted()
                 } else {
-                    Toast.makeText(context, "Ürün Silinirken Bir Hata Oldu", Toast.LENGTH_SHORT).show()
+                    showCustomToast(context, "Ürün Silinirken Bir Hata Oluştu")
                 }
             }
 
@@ -217,4 +222,23 @@ fun deleteItem(itemId: Int, token: String, context: Context, onItemDeleted: () -
                 Toast.makeText(context, "Network error", Toast.LENGTH_SHORT).show()
             }
         })
+}
+
+@Composable
+fun EmptyPage() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .background(MaterialTheme.colorScheme.background),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Henüz bir şey alınmadı mı?",
+            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
+            color = Color.Gray,
+            textAlign = TextAlign.Center
+        )
+    }
 }

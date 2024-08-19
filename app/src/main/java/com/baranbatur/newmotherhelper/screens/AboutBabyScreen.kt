@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,7 +19,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -47,6 +50,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.baranbatur.newmotherhelper.components.BottomNavigationBar
+import com.baranbatur.newmotherhelper.components.BottomNavigationBarWtihAds
+import com.baranbatur.newmotherhelper.components.InterstitialAdManager
 import com.baranbatur.newmotherhelper.service.ContentData
 import com.baranbatur.newmotherhelper.service.ContentResponse
 import com.baranbatur.newmotherhelper.service.RetrofitClient
@@ -100,7 +105,7 @@ fun AboutBabyScreen(navController: NavController, token: String) {
             )
         },
         bottomBar = {
-            BottomNavigationBar(navController = navController)
+            BottomNavigationBarWtihAds(navController = navController)
         }
     ) { innerPadding ->
         Column(
@@ -178,22 +183,34 @@ fun ExpandableItemRow(
 
         // Resim ve açıklama kısmı, sadece genişletildiğinde gösterilir
         if (isExpanded) {
+            InterstitialAdManager.showInterstitialAd(context = LocalContext.current)
+
             Image(
                 painter = rememberAsyncImagePainter(item.imageUrl),
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(180.dp)
-                    .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(16.dp)),
+                    .height(300.dp)
+                    .background(MaterialTheme.colorScheme.secondary, RoundedCornerShape(16.dp)),
                 contentScale = ContentScale.Crop
             )
             Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = item.description,
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.White,
-                modifier = Modifier.padding(8.dp)
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp) // Sabit yükseklik
+                    .background(MaterialTheme.colorScheme.secondary) // Aynı arka plan rengi
+                    .padding(8.dp)
+                    .verticalScroll(
+                        rememberScrollState()
+                    ) // Scroll edilebilir hale getirme
+            ) {
+                Text(
+                    text = item.description,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = Color.White
+                )
+            }
         }
     }
 }

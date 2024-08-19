@@ -45,6 +45,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import com.baranbatur.newmotherhelper.components.BannerAdView
+import com.baranbatur.newmotherhelper.components.BottomNavigationBarWtihAds
+import com.baranbatur.newmotherhelper.components.InterstitialAdManager
 import com.baranbatur.newmotherhelper.service.CategoryListItem
 import com.baranbatur.newmotherhelper.service.CategoryListResponse
 import com.baranbatur.newmotherhelper.service.RetrofitClient
@@ -127,6 +130,8 @@ fun CategoryListScreen(navController: NavController, categoryId: Int, token: Str
                     )
                 }
             })
+    }, bottomBar = {
+        BannerAdView(context = context)
     }) { innerPadding ->
         Column(
             modifier = Modifier
@@ -154,6 +159,7 @@ fun CategoryListScreen(navController: NavController, categoryId: Int, token: Str
             }
         }
     }
+
 }
 
 @Composable
@@ -182,6 +188,8 @@ fun CategoryListItemRow(
                         ) {
                             if (response.isSuccessful) {
                                 isChecked = !isChecked
+                                InterstitialAdManager.showInterstitialAd(context)
+                                
                             } else {
                                 Toast
                                     .makeText(context, "Failed to update item", Toast.LENGTH_SHORT)
