@@ -131,7 +131,7 @@ fun CategoryListScreen(navController: NavController, categoryId: Int, token: Str
                 }
             })
     }, bottomBar = {
-        BannerAdView(context = context)
+//        BannerAdView(context = context)
     }) { innerPadding ->
         Column(
             modifier = Modifier
@@ -172,8 +172,8 @@ fun CategoryListItemRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(78.dp)
-            .padding(8.dp)
+            .height(70.dp)
+            .padding(vertical = 2.dp)
             .background(MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(16.dp))
             .border(1.dp, Color(0xFFDDDDDD), shape = RoundedCornerShape(16.dp))
             .clickable {
@@ -189,7 +189,7 @@ fun CategoryListItemRow(
                             if (response.isSuccessful) {
                                 isChecked = !isChecked
                                 InterstitialAdManager.showInterstitialAd(context)
-                                
+
                             } else {
                                 Toast
                                     .makeText(context, "Failed to update item", Toast.LENGTH_SHORT)

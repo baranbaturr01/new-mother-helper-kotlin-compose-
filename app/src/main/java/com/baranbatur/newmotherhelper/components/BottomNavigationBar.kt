@@ -1,6 +1,7 @@
 package com.baranbatur.newmotherhelper.components
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
@@ -60,9 +61,17 @@ fun BottomNavigationBar(navController: NavController) {
                         screen.icon,
                         contentDescription = screen.title,
                         tint = WhiteColor,
+                        modifier = Modifier.size(28.dp)
+                            .padding(bottom = 4.dp)
                     )
                 },
-                label = { Text(screen.title, color = WhiteColor) },
+                label = {
+                    Text(
+                        screen.title,
+                        color = WhiteColor,
+                        fontSize = MaterialTheme.typography.labelSmall.lineHeight,
+                    )
+                        },
                 selected = currentRoute == screen.route,
                 onClick = {
                     navController.navigate(screen.route) {

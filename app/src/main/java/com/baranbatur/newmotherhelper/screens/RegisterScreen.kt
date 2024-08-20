@@ -161,7 +161,7 @@ fun RegisterScreen(navController: NavController) {
             }
         }
         Spacer(modifier = Modifier.weight(1f))
-        BannerAdView(context = context)
+//        BannerAdView(context = context)
     }
 }
 

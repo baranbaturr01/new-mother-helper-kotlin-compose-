@@ -151,7 +151,7 @@ fun ExpandableItemRow(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(vertical = 2.dp)
             .background(MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(16.dp))
             .border(1.dp, Color(0xFFDDDDDD), shape = RoundedCornerShape(16.dp))
             .clickable { onClick() }
@@ -199,7 +199,7 @@ fun ExpandableItemRow(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp) // Sabit yükseklik
-                    .background(MaterialTheme.colorScheme.secondary) // Aynı arka plan rengi
+                    .background(MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(16.dp)) // Aynı arka plan rengi
                     .padding(8.dp)
                     .verticalScroll(
                         rememberScrollState()
@@ -208,7 +208,7 @@ fun ExpandableItemRow(
                 Text(
                     text = item.description,
                     style = MaterialTheme.typography.bodyLarge,
-                    color = Color.White
+                    color = Color.White,
                 )
             }
         }

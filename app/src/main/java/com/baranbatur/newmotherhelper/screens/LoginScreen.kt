@@ -40,16 +40,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.baranbatur.newmotherhelper.R
@@ -60,8 +54,8 @@ import com.baranbatur.newmotherhelper.service.LoginRequest
 import com.baranbatur.newmotherhelper.service.LoginResponse
 import com.baranbatur.newmotherhelper.service.RetrofitClient
 import com.baranbatur.newmotherhelper.ui.theme.Shapes
-import com.baranbatur.newmotherhelper.ui.theme.LightGreyColor
 import com.baranbatur.newmotherhelper.ui.theme.PrimaryColor
+import com.baranbatur.newmotherhelper.components.showCustomToast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -77,7 +71,7 @@ fun LoginScreen(navController: NavController) {
     val passwordFocusRequester = FocusRequester()
     val sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
     val editor = sharedPreferences.edit()
-BannerAdView(context = context)
+    BannerAdView(context = context)
     Column(
         Modifier
             .fillMaxSize()
@@ -133,9 +127,7 @@ BannerAdView(context = context)
                                 isLoading = false
                                 if (response.isSuccessful) {
                                     response.body()?.data?.token?.let { token ->
-                                        // Store the token securely (e.g., SharedPreferences)
                                         editor.putString("token", token).apply()
-                                        // Navigate to the home screen
                                         navController.popBackStack()
                                         navController.navigate("home")
                                     } ?: run {

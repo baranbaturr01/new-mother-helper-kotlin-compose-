@@ -15,6 +15,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.baranbatur.newmotherhelper.R
 import com.baranbatur.newmotherhelper.components.BannerAdView
@@ -62,7 +64,6 @@ fun HomeScreen(navController: NavController, token: String) {
         topBar = {
             Header()
         },
-
         bottomBar = {
             BottomNavigationBarWtihAds(navController = navController)
         },
@@ -150,14 +151,17 @@ fun CategoryItem(category: Category, navController: NavController) {
                 style = MaterialTheme.typography.titleMedium,
                 color = WhiteColor, // Kategorinin adını beyaz renkte yapalım
                 modifier = Modifier.fillMaxWidth(),
-                maxLines = 4
+                maxLines = 4,
+                textAlign = TextAlign.Center,
+                lineHeight = 18.sp
             )
             Text(
                 text = category.description,
                 style = MaterialTheme.typography.bodySmall,
                 color = WhiteColor.copy(alpha = 1f), // Açıklama metnini biraz daha şeffaf yapalım
                 modifier = Modifier.fillMaxWidth(),
-                maxLines = 2
+                maxLines = 2,
+                textAlign = TextAlign.Center
             )
         }
     }

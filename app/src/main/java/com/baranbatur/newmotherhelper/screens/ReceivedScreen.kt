@@ -92,8 +92,7 @@ fun ReceivedScreen(navController: NavController, token: String) {
                         )
                     }
 
-                },
-                colors = TopAppBarDefaults.topAppBarColors(MaterialTheme.colorScheme.secondary)
+                }, colors = TopAppBarDefaults.topAppBarColors(MaterialTheme.colorScheme.secondary)
             )
         },
         bottomBar = {
@@ -120,14 +119,12 @@ fun ReceivedScreen(navController: NavController, token: String) {
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(items) { item ->
-                        UserCategoryListItemRow(
-                            item = item,
+                        UserCategoryListItemRow(item = item,
                             token = token,
                             navController = navController,
                             onItemDeleted = {
                                 items = items.filter { it.id != item.id }
-                            }
-                        )
+                            })
                     }
                 }
             }
@@ -149,8 +146,8 @@ fun UserCategoryListItemRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(78.dp)
-            .padding(8.dp)
+            .height(68.dp)
+            .padding(vertical = 2.dp)
             .background(MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(16.dp))
             .border(1.dp, Color(0xFFDDDDDD), shape = RoundedCornerShape(16.dp)),
         verticalAlignment = Alignment.CenterVertically,
@@ -172,17 +169,14 @@ fun UserCategoryListItemRow(
                 .weight(1f)
                 .padding(horizontal = 16.dp)
         )
-        Icon(
-            imageVector = Icons.Default.Delete,
+        Icon(imageVector = Icons.Default.Delete,
             contentDescription = "Delete Item",
             tint = Color.White,
             modifier = Modifier
                 .padding(end = 16.dp)
-                .clickable { showDialog = true }
-        )
+                .clickable { showDialog = true })
         if (showDialog) {
-            AlertDialog(
-                onDismissRequest = { showDialog = false },
+            AlertDialog(onDismissRequest = { showDialog = false },
                 title = { Text(text = "Bu Ürün Alınmadı Mı?") },
                 confirmButton = {
                     TextButton(onClick = {
@@ -196,8 +190,7 @@ fun UserCategoryListItemRow(
                     TextButton(onClick = { showDialog = false }) {
                         Text("Hayır")
                     }
-                }
-            )
+                })
         }
     }
 }
