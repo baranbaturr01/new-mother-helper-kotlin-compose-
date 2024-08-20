@@ -131,13 +131,10 @@ fun LoginScreen(navController: NavController) {
                                         navController.popBackStack()
                                         navController.navigate("home")
                                     } ?: run {
-                                        Toast.makeText(
-                                            context, "Invalid credentials", Toast.LENGTH_SHORT
-                                        ).show()
+                                        showCustomToast(context, "Giriş Bilgileri Geçersiz")
                                     }
                                 } else {
-                                    Toast.makeText(context, "Login failed", Toast.LENGTH_SHORT)
-                                        .show()
+                                    showCustomToast(context,"Giriş Bilgileri Geçersiz.")
                                 }
                             }
 

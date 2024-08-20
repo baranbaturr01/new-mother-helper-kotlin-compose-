@@ -1,5 +1,7 @@
 package com.baranbatur.newmotherhelper.screens
 
+import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -9,6 +11,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -19,45 +22,58 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.baranbatur.newmotherhelper.R
-import com.baranbatur.newmotherhelper.components.BannerAdView
-import com.baranbatur.newmotherhelper.components.BottomNavigationBar
 import com.baranbatur.newmotherhelper.components.BottomNavigationBarWtihAds
 import com.baranbatur.newmotherhelper.components.Header
+import com.baranbatur.newmotherhelper.components.showCustomToast
 import com.baranbatur.newmotherhelper.service.Category
 import com.baranbatur.newmotherhelper.service.CategoryResponse
 import com.baranbatur.newmotherhelper.service.RetrofitClient
 import com.baranbatur.newmotherhelper.ui.theme.WhiteColor
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 @Composable
 fun HomeScreen(navController: NavController, token: String) {
-    var categories by remember { mutableStateOf<List<Category>>(emptyList()) }
-    var isLoading by remember { mutableStateOf(true) }
     val context = LocalContext.current
+    val sharedPreferences = context.getSharedPreferences("cache", Context.MODE_PRIVATE)
+    val cachedCategoriesJson = sharedPreferences.getString("categories", null)
+    var categories by rememberSaveable { mutableStateOf<List<Category>>(emptyList()) }
+    var isLoading by rememberSaveable { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
-        RetrofitClient.instance.getCategories("Bearer $token")
-            .enqueue(object : Callback<CategoryResponse> {
-                override fun onResponse(
-                    call: Call<CategoryResponse>, response: Response<CategoryResponse>
-                ) {
-                    isLoading = false
-                    if (response.isSuccessful) {
-                        categories = response.body()?.data ?: emptyList()
-                    } else {
-                        println(response.errorBody()?.string())
-                        Toast.makeText(context, "Failed to load categories", Toast.LENGTH_SHORT)
-                            .show()
+        if (cachedCategoriesJson != null) {
+            Log.d("HomeScreen", "Using cached categories")
+            categories = Gson().fromJson(cachedCategoriesJson, Array<Category>::class.java).toList()
+            isLoading = false
+        } else {
+            Log.d("HomeScreen", "Fetching categories from API")
+            RetrofitClient.instance.getCategories("Bearer $token")
+                .enqueue(object : Callback<CategoryResponse> {
+                    override fun onResponse(
+                        call: Call<CategoryResponse>, response: Response<CategoryResponse>
+                    ) {
+                        isLoading = false
+                        if (response.isSuccessful) {
+                            categories = response.body()?.data ?: emptyList()
+                            Log.d("HomeScreen", "Veriler backend'den alındı ve cache'e kaydedildi")
+                            sharedPreferences.edit()
+                                .putString("categories", Gson().toJson(categories)).apply()
+                        } else {
+                            println(response.errorBody()?.string())
+                            Toast.makeText(context, "Failed to load categories", Toast.LENGTH_SHORT)
+                                .show()
+                        }
                     }
-                }
 
-                override fun onFailure(call: Call<CategoryResponse>, t: Throwable) {
-                    isLoading = false
-                    Toast.makeText(context, "Network error", Toast.LENGTH_SHORT).show()
-                }
-            })
+                    override fun onFailure(call: Call<CategoryResponse>, t: Throwable) {
+                        isLoading = false
+                        showCustomToast(context, "Ağ Hatası")
+                    }
+                })
+        }
+
     }
 
     Scaffold(
