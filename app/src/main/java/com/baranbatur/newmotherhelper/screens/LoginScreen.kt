@@ -1,6 +1,7 @@
 package com.baranbatur.newmotherhelper.screens
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,17 +18,10 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.*
@@ -63,7 +57,7 @@ import retrofit2.Response
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(navController: NavController) {
-    val context = LocalContext.current
+    val context = LocalContext.current.applicationContext
     val focusManager = LocalFocusManager.current
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -71,13 +65,20 @@ fun LoginScreen(navController: NavController) {
     val passwordFocusRequester = FocusRequester()
     val sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
     val editor = sharedPreferences.edit()
+    LaunchedEffect(Unit) {
+        val token = sharedPreferences.getString("token", null)
+        if (token != null) {
+            navController.popBackStack()
+            navController.navigate("home")
+        }
+    }
     BannerAdView(context = context)
     Column(
         Modifier
             .fillMaxSize()
             .padding(24.dp)
-            .windowInsetsPadding(WindowInsets.systemBars) // Sistem çubukları için padding
-            .windowInsetsPadding(WindowInsets.ime) // Klavye için padding
+            .windowInsetsPadding(WindowInsets.systemBars)
+            .windowInsetsPadding(WindowInsets.ime)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp, alignment = Alignment.Top),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -127,25 +128,26 @@ fun LoginScreen(navController: NavController) {
                                 isLoading = false
                                 if (response.isSuccessful) {
                                     response.body()?.data?.token?.let { token ->
-                                        editor.putString("token", token).apply()
-                                        navController.popBackStack()
-                                        navController.navigate("home")
+                                        if (token.isNotEmpty()) {
+                                            editor.putString("token", token).apply()
+                                            navController.popBackStack()
+                                            navController.navigate("home")
+                                        } else {
+                                            navController.navigate("login")
+                                        }
                                     } ?: run {
                                         showCustomToast(context, "Giriş Bilgileri Geçersiz")
                                     }
                                 } else {
-                                    showCustomToast(context,"Giriş Bilgileri Geçersiz.")
+                                    showCustomToast(context, "Giriş Bilgileri Geçersiz.")
                                 }
                             }
 
                             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                                 isLoading = false
                                 Toast.makeText(
-                                    context,
-                                    "Network error${t.message}",
-                                    Toast.LENGTH_LONG
-                                )
-                                    .show()
+                                    context, "Network error${t.message}", Toast.LENGTH_LONG
+                                ).show()
                                 println(t.message)
                             }
                         })

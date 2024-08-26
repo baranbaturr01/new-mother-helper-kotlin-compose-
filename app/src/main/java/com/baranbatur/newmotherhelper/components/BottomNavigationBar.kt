@@ -3,8 +3,6 @@ package com.baranbatur.newmotherhelper.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material3.*
@@ -13,21 +11,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.materialIcon
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.min
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import coil.size.Size
-import com.baranbatur.newmotherhelper.ui.theme.LightGreyColor
-import com.baranbatur.newmotherhelper.ui.theme.PrimaryColor
 import com.baranbatur.newmotherhelper.ui.theme.SecondaryColor
 import com.baranbatur.newmotherhelper.ui.theme.WhiteColor
 
@@ -61,7 +52,8 @@ fun BottomNavigationBar(navController: NavController) {
                         screen.icon,
                         contentDescription = screen.title,
                         tint = WhiteColor,
-                        modifier = Modifier.size(28.dp)
+                        modifier = Modifier
+                            .size(28.dp)
                             .padding(bottom = 4.dp)
                     )
                 },
@@ -71,7 +63,7 @@ fun BottomNavigationBar(navController: NavController) {
                         color = WhiteColor,
                         fontSize = MaterialTheme.typography.labelSmall.lineHeight,
                     )
-                        },
+                },
                 selected = currentRoute == screen.route,
                 onClick = {
                     navController.navigate(screen.route) {

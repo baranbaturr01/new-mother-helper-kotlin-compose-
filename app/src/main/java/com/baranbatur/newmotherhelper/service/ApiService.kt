@@ -19,8 +19,8 @@ data class UpdateCategoryItemRequest(val categoryListId: Int)
 data class RegisterResponse(val success: Boolean, val data: RegisterData)
 data class RegisterData(val name: String, val surname: String, val email: String, val token: String)
 data class TokenData(val token: String)
+data class CategoryResponse(val success: Boolean, val data: List<Category>?)
 data class Category(val id: Int, val name: String, val description: String)
-data class CategoryResponse(val success: Boolean, val data: List<Category>)
 data class CategoryListResponse(val success: Boolean, val data: CategoryListData)
 data class CategoryListData(
     val id: Int,

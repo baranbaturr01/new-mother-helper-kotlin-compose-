@@ -51,10 +51,12 @@ import retrofit2.Response
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReceivedScreen(navController: NavController, token: String) {
+fun ReceivedScreen(navController: NavController) {
     var items by remember { mutableStateOf<List<UserCategoryListData>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
     val context = LocalContext.current
+    val sharedPreferences2 = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+    val token = sharedPreferences2.getString("token", "") ?: ""
     LaunchedEffect(Unit) {
         RetrofitClient.instance.getUserCategoryList("Bearer $token")
             .enqueue(object : Callback<UserCategoryListResponse> {

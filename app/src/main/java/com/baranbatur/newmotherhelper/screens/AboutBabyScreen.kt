@@ -63,9 +63,12 @@ import retrofit2.Callback
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun AboutBabyScreen(navController: NavController, token: String) {
+fun AboutBabyScreen(navController: NavController) {
     val context = LocalContext.current
     val sharedPreferences = context.getSharedPreferences("cache", Context.MODE_PRIVATE)
+    val sharedPreferences2 = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+    val token = sharedPreferences2.getString("token", "") ?: ""
+    Log.d("ABOUT", "Token: $token")
     val cachedAbout = sharedPreferences.getString("about", null)
     var items by rememberSaveable { mutableStateOf<List<ContentData>>(emptyList()) }
     var isLoading by rememberSaveable { mutableStateOf(true) }

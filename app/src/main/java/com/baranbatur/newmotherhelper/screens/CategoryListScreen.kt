@@ -1,5 +1,6 @@
 package com.baranbatur.newmotherhelper.screens
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -60,8 +61,9 @@ import retrofit2.Response
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategoryListScreen(navController: NavController, categoryId: Int, token: String) {
+fun CategoryListScreen(navController: NavController, categoryId: Int) {
     var items by remember { mutableStateOf<List<CategoryListItem>>(emptyList()) }
+
     var isLoading by remember { mutableStateOf(true) }
     var categoryName by remember {
         mutableStateOf("")
@@ -70,6 +72,8 @@ fun CategoryListScreen(navController: NavController, categoryId: Int, token: Str
         mutableStateOf("")
     }
     val context = LocalContext.current
+    val sharedPreferences2 = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+    val token = sharedPreferences2.getString("token", "") ?: ""
 
     LaunchedEffect(categoryId) {
         RetrofitClient.instance.getCategoryList("Bearer $token", categoryId)

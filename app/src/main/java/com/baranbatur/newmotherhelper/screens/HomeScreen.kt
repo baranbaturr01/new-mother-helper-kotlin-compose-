@@ -35,34 +35,49 @@ import retrofit2.Callback
 import retrofit2.Response
 
 @Composable
-fun HomeScreen(navController: NavController, token: String) {
+fun HomeScreen(navController: NavController) {
     val context = LocalContext.current
     val sharedPreferences = context.getSharedPreferences("cache", Context.MODE_PRIVATE)
     val cachedCategoriesJson = sharedPreferences.getString("categories", null)
+    val sharedPreferences2 = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+    val token2 = sharedPreferences2.getString("token", "") ?: ""
     var categories by rememberSaveable { mutableStateOf<List<Category>>(emptyList()) }
     var isLoading by rememberSaveable { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
         if (cachedCategoriesJson != null) {
-            Log.d("HomeScreen", "Using cached categories")
-            categories = Gson().fromJson(cachedCategoriesJson, Array<Category>::class.java).toList()
-            isLoading = false
+            try {
+                categories =
+                    Gson().fromJson(cachedCategoriesJson, Array<Category>::class.java).toList()
+                isLoading = false
+            } catch (e: Exception) {
+                Log.e("HomeScreen", "Cache verisini parse ederken hata oluştu", e)
+                sharedPreferences.edit().remove("categories").apply()
+                isLoading = true
+            }
         } else {
             Log.d("HomeScreen", "Fetching categories from API")
-            RetrofitClient.instance.getCategories("Bearer $token")
+            RetrofitClient.instance.getCategories("Bearer $token2")
                 .enqueue(object : Callback<CategoryResponse> {
                     override fun onResponse(
                         call: Call<CategoryResponse>, response: Response<CategoryResponse>
                     ) {
                         isLoading = false
+                        Log.d("BURADA", response.body().toString())
                         if (response.isSuccessful) {
                             categories = response.body()?.data ?: emptyList()
-                            Log.d("HomeScreen", "Veriler backend'den alındı ve cache'e kaydedildi")
                             sharedPreferences.edit()
                                 .putString("categories", Gson().toJson(categories)).apply()
                         } else {
-                            println(response.errorBody()?.string())
-                            Toast.makeText(context, "Failed to load categories", Toast.LENGTH_SHORT)
+                            Log.d(
+                                "HomeScreen",
+                                "Failed to load categories: " + response.errorBody()?.string()
+                            )
+                            Toast.makeText(
+                                context,
+                                response.errorBody()?.toString(),
+                                Toast.LENGTH_LONG
+                            )
                                 .show()
                         }
                     }
@@ -176,7 +191,7 @@ fun CategoryItem(category: Category, navController: NavController) {
                 style = MaterialTheme.typography.bodySmall,
                 color = WhiteColor.copy(alpha = 1f), // Açıklama metnini biraz daha şeffaf yapalım
                 modifier = Modifier.fillMaxWidth(),
-                maxLines = 2,
+                maxLines = 6,
                 textAlign = TextAlign.Center
             )
         }
