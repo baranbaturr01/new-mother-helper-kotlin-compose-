@@ -68,7 +68,6 @@ fun AboutBabyScreen(navController: NavController) {
     val sharedPreferences = context.getSharedPreferences("cache", Context.MODE_PRIVATE)
     val sharedPreferences2 = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
     val token = sharedPreferences2.getString("token", "") ?: ""
-    Log.d("ABOUT", "Token: $token")
     val cachedAbout = sharedPreferences.getString("about", null)
     var items by rememberSaveable { mutableStateOf<List<ContentData>>(emptyList()) }
     var isLoading by rememberSaveable { mutableStateOf(true) }
@@ -77,11 +76,8 @@ fun AboutBabyScreen(navController: NavController) {
     LaunchedEffect(Unit) {
         if (cachedAbout != null) {
             items = Gson().fromJson(cachedAbout, Array<ContentData>::class.java).toList()
-            Log.d("about", "Fetching categories from cache")
             isLoading = false
         } else {
-            Log.d("about", "Fetching categories from API")
-
             RetrofitClient.instance.getContent("Bearer $token")
                 .enqueue(object : Callback<ContentResponse> {
                     override fun onResponse(
@@ -92,13 +88,11 @@ fun AboutBabyScreen(navController: NavController) {
                             items = response.body()?.data ?: emptyList()
                             sharedPreferences.edit().putString("about", Gson().toJson(items))
                                 .apply()
-                            Log.d("ABOUT", "Veriler backend'den alındı ve cache'e kaydedildi")
                         } else {
                             Toast.makeText(context, "Failed to load items", Toast.LENGTH_SHORT)
                                 .show()
                         }
                     }
-
                     override fun onFailure(call: Call<ContentResponse>, t: Throwable) {
                         isLoading = false
                         Toast.makeText(context, "Network error", Toast.LENGTH_SHORT).show()
@@ -107,7 +101,6 @@ fun AboutBabyScreen(navController: NavController) {
         }
 
     }
-
     Scaffold(topBar = {
         TopAppBar(
             title = {

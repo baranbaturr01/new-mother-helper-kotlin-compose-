@@ -8,8 +8,10 @@ import retrofit2.http.POST
 import retrofit2.http.Header
 import retrofit2.http.Path
 import retrofit2.http.Query
+import java.sql.Timestamp
 
 data class LoginRequest(val email: String, val password: String)
+data class UserDelete(val success: Boolean)
 data class LoginResponse(val success: Boolean, val data: TokenData)
 data class RegisterRequest(
     val name: String, val surname: String, val email: String, val password: String
@@ -56,6 +58,24 @@ data class ContentData(
     val id: Int, val title: String, val description: String, val imageUrl: String
 )
 
+data class BlogResponse(val success: Boolean, val data: List<BlogData>)
+data class BlogData(
+    val id: Int,
+    val title: String,
+    val content: String,
+    val voteCount: Int,
+    val commentCount: Int,
+    val user: User,
+    val comments: List<CommentsData>,
+    val createdAt: Timestamp,
+)
+
+data class CommentsData(
+    val id: Int, val content: String, val user: User
+)
+
+data class User(val id: Int, val name: String, val surname: String)
+
 interface ApiService {
     @POST("api/v1/user/login")
     fun login(@Body request: LoginRequest): Call<LoginResponse>
@@ -86,4 +106,10 @@ interface ApiService {
 
     @GET("api/v1/contents")
     fun getContent(@Header("Authorization") token: String): Call<ContentResponse>
+
+    @GET("api/v1/blog-posts/posts")
+    fun getBlogPosts(@Header("Authorization") token: String): Call<BlogResponse>
+
+    @POST("api/v1/user/delete")
+    fun deleteUser(@Header("Authorization") token: String): Call<UserDelete>
 }

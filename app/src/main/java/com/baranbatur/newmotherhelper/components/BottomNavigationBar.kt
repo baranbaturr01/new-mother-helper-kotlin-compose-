@@ -13,6 +13,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.getValue
@@ -43,6 +44,8 @@ fun BottomNavigationBar(navController: NavController) {
         val screens = listOf(
             Screen.Home,
             Screen.Received,
+            Screen.About,
+//            Screen.Blog
             Screen.Profile
         )
         screens.forEach { screen ->
@@ -82,5 +85,8 @@ fun BottomNavigationBar(navController: NavController) {
 sealed class Screen(val route: String, val title: String, val icon: ImageVector) {
     object Home : Screen("home", "Anasayfa", Icons.Filled.Home)
     object Received : Screen("received", "Aldıklarım", Icons.Filled.CheckCircle)
-    object Profile : Screen("about", "Bebeğim", Icons.Filled.Person)
+    object About : Screen("about", "Bebeğim", Icons.Filled.Face)
+
+    //    object Blog : Screen("blog", "Blog", Icons.Filled.Person)
+    object Profile : Screen("profile", "Profil", Icons.Filled.Person)
 }

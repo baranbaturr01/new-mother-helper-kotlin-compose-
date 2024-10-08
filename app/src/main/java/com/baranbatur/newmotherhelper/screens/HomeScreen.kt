@@ -51,7 +51,6 @@ fun HomeScreen(navController: NavController) {
                     Gson().fromJson(cachedCategoriesJson, Array<Category>::class.java).toList()
                 isLoading = false
             } catch (e: Exception) {
-                Log.e("HomeScreen", "Cache verisini parse ederken hata oluştu", e)
                 sharedPreferences.edit().remove("categories").apply()
                 isLoading = true
             }

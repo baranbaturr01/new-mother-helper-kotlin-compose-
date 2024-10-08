@@ -9,9 +9,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.baranbatur.newmotherhelper.screens.AboutBabyScreen
+import com.baranbatur.newmotherhelper.screens.BlogScreen
 import com.baranbatur.newmotherhelper.screens.CategoryListScreen
 import com.baranbatur.newmotherhelper.screens.HomeScreen
 import com.baranbatur.newmotherhelper.screens.LoginScreen
+import com.baranbatur.newmotherhelper.screens.ProfileScreen
 import com.baranbatur.newmotherhelper.screens.ReceivedScreen
 import com.baranbatur.newmotherhelper.screens.RegisterScreen
 import com.baranbatur.newmotherhelper.screens.SplashScreen
@@ -40,6 +42,13 @@ fun NavGraph(navController: NavHostController) {
         }
         composable("about") {
             AboutBabyScreen(navController)
+        }
+//        composable("blog"){
+//            BlogScreen(navController)
+//        }
+        composable("profile")
+        {
+            ProfileScreen(navController)
         }
 
     }
